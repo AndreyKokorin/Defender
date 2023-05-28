@@ -14,7 +14,12 @@ for (let i = 1; i <= 37; i++) {
   }
 
 moveListener = (event) => {
-    let movetach = event.clientX;
+    let movetach;
+    if (event.clientX !== undefined) {
+        movetach = event.clientX;
+      } else if (event.touches.length > 0) {
+        movetach = event.touches[0].clientX;
+      }
     let howMoved = Math.abs(movetach - starttouch);
 
     if(howMoved > 5){
@@ -52,11 +57,18 @@ function showAdvantages(frame){
             automobile.removeEventListener("mousemove", moveListener);
             automobile.removeEventListener("mouseup", mouseUpFunc);
             automobile.removeEventListener("mousedown", mouseDownFunc);
+            automobile.removeEventListener("touchmove", moveListener);
+            automobile.removeEventListener("touchend", mouseUpFunc);
+            automobile.removeEventListener("touchstart", mouseDownFunc);
             setTimeout(() => {
                 showblock.classList.add("opacity0");
                 showblock.remove();
-                automobile.addEventListener("mouseup", mouseUpFunc);
-                automobile.addEventListener("mousedown", mouseDownFunc);
+                automobile.addEventListener("mousemove", moveListener);
+            automobile.addEventListener("mouseup", mouseUpFunc);
+            automobile.addEventListener("mousedown", mouseDownFunc);
+            automobile.addEventListener("touchmove", moveListener);
+            automobile.addEventListener("touchend", mouseUpFunc);
+            automobile.addEventListener("touchstart", mouseDownFunc);
                 counterAdvanteges++;
                 if(frame === 34){
                     const buttonMore = document.querySelector(".buttonMore");
@@ -72,13 +84,19 @@ function showAdvantages(frame){
 
 
 function mouseDownFunc(event){
-    starttouch = event.clientX;
+    if (event.clientX !== undefined) {
+        starttouch = event.clientX;
+      } else if (event.touches.length > 0) {
+        starttouch = event.touches[0].clientX;
+      }
     automobile.addEventListener("mousemove", moveListener);
+    automobile.addEventListener("touchmove", moveListener);
     console.log("Добавлена mousemove")
 }
 
 function mouseUpFunc(event){
     automobile.removeEventListener("mousemove", moveListener);
+    automobile.removeEventListener("touchmove", moveListener);
     console.log("Удолена")
 }
 
@@ -86,6 +104,8 @@ function mouseUpFunc(event){
 startbutton.addEventListener("click", (event) => {
     automobile.addEventListener("mouseup", mouseUpFunc);
     automobile.addEventListener("mousedown", mouseDownFunc);
+    automobile.addEventListener("touchend", mouseUpFunc);
+    automobile.addEventListener("touchstart", mouseDownFunc);
     startbutton.classList.add("dnone");
     fingers.classList.remove("dnone")
 })
